@@ -1,0 +1,127 @@
+
+Список команд для запуска MQ 
+
+Заходим на сервер под пользователем mqm
+
+-- Запуск Менеджера очередей
+cd /opt/mqm/bin/strmqm KZ.RBK.TEST.MQ
+--
+Конфигурация MQ, после запуска
+cd /opt/mqm/bin/runmqsc KZ.RBK.TEST.MQ
+
+-- Запуск Listener
+START LISTENER(LISTENER.TCP)
+
+
+-- Просмотр статуса Listener
+DISPLAY LSSTATUS(LISTENER.TCP)
+AMQ8631: Display listener status details.
+   LISTENER(LISTENER.TCP)                  STATUS(RUNNING)
+   PID(1956)                               		 STARTDA(2016-05-04)
+   STARTTI(10.35.39)                       DESCR( )
+   TRPTYPE(TCP)                            CONTROL(MANUAL)
+   IPADDR(*)                               PORT(1414)
+   BACKLOG(100)
+
+-- Статус должен быть RUNNING
+
+
+-- завершение конфигурации
+end
+
+
+----------------------------------------------------------------------------
+---------------------------
+Далее командой netstat -nlp | grep 1414 проверить слушается ли порт.
+
+Логи MQ находятся в папке /var/mqm/qmgrs/KZ!RBK!TEST!MQ/errors
+
+
+./iib mqsisetdbparms KZ.RBK.DEVNODE -n sftp::siteidn -u ibec -p
+LoopL00Pzz!Y
+
+
+
+
+./iib mqsisetdbparms KZ.RBK.DEVNODE -n jdbc::ABISIBSO -u USER_IIB -p ONh_re45Y7s3
+
+./iib mqsisetdbparms KZ.RBK.DEVNODE -n jdbc::ABISOPENWAY -u ibnr -p Dke451V#fkE45
+
+./iib mqsisetdbparms KZ.RBK.DEVNODE -n jdbc::ABISVABANK -u BARS2VB6 -p BARS2VB6
+
+./iib mqsisetdbparms KZ.RBK.DEVNODE -n smtp::SMTPIDN -u helpdesk -p Aa111111
+
+./iib mqsicreateconfigurableservice KZ.RBK.DEVNODE -c SMTP -o SMTPCOMMON
+
+./iib mqsichangeproperties KZ.RBK.DEVNODE -c SMTP -o SMTPCOMMON -n serverName -v smtp.lotus1.kazincombank.kz:25
+
+./iib mqsichangeproperties KZ.RBK.DEVNODE -c SMTP -o SMTPCOMMON -n securityIdentity -v SMTPIDN 
+
+
+./iib mqsichangebroker KZ.RBK.BROKER1 -f all
+./iib mqsichangeproperties KZ.RBK.DEVNODE -b httplistener -o HTTPListener -n startListener -v false
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n explicitlySetPortNumber -v 7080
+./iib mqsireportproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -r
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n maxPostSize -v 8388608
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n acceptCount -v 100
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n connectionTimeout -v 30000
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n maxHttpHeaderSize -v 16384
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n maxKeepAliveRequests -v 100
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n maxThreads -v 500
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n minSpareThreads -v 20
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n serverName -v KZ.BANKRBK.ESB
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n socketBuffer -v 9000
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n corsAllowMethods -v POST
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o HTTPConnector -n tcpNoDelay -v true
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e default -o ComIbmJVMManager -n jvmMaxHeapSize -v 1073741824
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e ibso -o ComIbmJVMManager -n jvmMaxHeapSize -v 1073741824
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e ibso -o ComIbmJVMManager -n jvmMaxHeapSize -v 536870912
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e credits -o ComIbmJVMManager -n jvmMaxHeapSize -v 536870912
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e deposits -o ComIbmJVMManager -n jvmMaxHeapSize -v 536870912
+./iib mqsichangeproperties KZ.RBK.DEVNODE -o ComIbmDatabaseConnectionManager -n maxConnectionAge -v 3
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e documents -o ComIbmDatabaseConnectionManager -n maxConnectionAge -v 1
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e ibso -o ComIbmDatabaseConnectionManager -n maxConnectionAge -v 10
+
+./iib mqsichangeproperties KZ.RBK.DEVNODE -e documents -o ComIbmDatabaseConnectionManager -n maxConnectionAge -v -1
+./iib mqsireportproperties KZ.RBK.DEVNODE -e documents -o ComIbmDatabaseConnectionManager -r
+
+./iib mqsireportproperties KZ.RBK.DEVNODE -e clients -o ComIbmDatabaseConnectionManager 
+
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e 1C -o ComIbmJVMManager -n jvmMaxHeapSize -v 536870912
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e ibso -o ComIbmJVMManager -n jvmMaxHeapSize -v 1073741824
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e pshep -o ComIbmJVMManager -n jvmMaxHeapSize -v 536870912
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e statements -o ComIbmJVMManager -n jvmMaxHeapSize -v 2147483648
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e utilites -o ComIbmJVMManager -n jvmMaxHeapSize -v 2147483648
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e loggers -o ComIbmJVMManager -n jvmMaxHeapSize -v 1073741824
+
+./iib mqsichangeproperties KZ.RBK.BROKER1 -b agent -n jvmMaxHeapSize -o ComIbmJVMManager -v 1073741824
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e credits -o ComIbmJVMManager -n jvmMaxHeapSize -v 1073741824
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e credits -o ComIbmJVMManager -n jvmMaxHeapSize -v 1073741824
+./iib mqsiservice KZ.RBK.DEVNODE -r MaxJVMHeapSize=536870912
+
+./iib mqsisetdbparms KZ.RBK.DEVNODE -n jdbc::iibdbidn -u iibuser -p Aa111111
+
+
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e soadbocorp -o ComIbmJVMManager -n jvmMaxHeapSize -v 2147483648
+
+./iib mqsichangeproperties KZ.RBK.BROKER1 -e soadbocorp -o ComIbmSocketConnectionManager -n tcpNoDelay -v true
+
+
+./iib mqsichangeauthmode KZ.RBK.DEVNODE -s active -m file
+./iib mqsireportauthmode KZ.RBK.DEVNODE
+./iib mqsichangefileauth KZ.RBK.DEVNODE -r mqm -p read+,write+,execute+
+./iib mqsichangefileauth KZ.RBK.DEVNODE -r mqm -p all+
+./iib mqsistart KZ.RBK.DEVNODE
+./iib mqsiwebuseradmin KZ.RBK.DEVNODE -c -u mqm -a 102030
+./iib mqsireportfileauth KZ.RBK.DEVNODE -r mqm
+
+netstat -anp | grep 7802 | grep ESTABLISHED | wc -l
+
+DcvqqWW-391
+
+
+./iib mqsichangeproperties KZ.RBK.BROKER1 -o BrokerRegistry -n  brokerKeystoreFile -v /var/mqsi/Broker.jks 
+
+./iib mqsichangeproperties KZ.RBK.BROKER1 -o BrokerRegistry -n  brokerTruststoreFile -v /var/mqsi/Broker.jks 
+
+./iib mqsichangeproperties KZ.RBK.BROKER1 -o BrokerRegistry -n allowSSLv3 -v true 
